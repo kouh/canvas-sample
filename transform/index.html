@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>transform</title>
+  <style>
+    canvas{
+      margin: 100px 100px;
+    }
+  </style>
+</head>
+<body>
+  
+  <canvas id="cav"></canvas>
+  <script>
+    var 
+      canvas = document.getElementById('cav'),
+      loop;
+
+    loop = function(canvas, fps){
+
+      if(!canvas || !canvas.getContext) return false;
+      canvas.width  = 800;
+      canvas.height = 600;
+
+      var 
+        ctx = canvas.getContext('2d'),
+        update;
+
+      update = function(){
+        ctx.clearRect(0,0,canvas.width, canvas.height);
+        
+        ctx.save();
+        ctx.translate(50,50);
+        ctx.strokeRect(-50,-50,100,100);
+        ctx.restore();
+        
+        ctx.save();
+        ctx.translate(50,50);
+        ctx.translate(50,50);
+        ctx.strokeRect(-50,-50,100,100);
+        ctx.restore();
+
+        ctx.save();
+        ctx.translate(50,50);
+        ctx.rotate(30/180*Math.PI);
+        ctx.strokeRect(-50,-50,100,100);
+        ctx.restore();
+        
+        ctx.save();
+        ctx.translate(150,150);
+        ctx.rotate(45/180*Math.PI);
+        ctx.scale(1.2, 0.8);
+        ctx.strokeRect(-50,-50,100,100);
+        ctx.restore();
+        
+        // ctx.restore();
+      };
+      setInterval(update, 1000/fps);
+    };
+
+    loop(canvas, 60);
+  
+  </script>
+</body>
+</html>
