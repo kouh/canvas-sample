@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>strokeStyle/fillStyle</title>
+</head>
+<body>
+  <select id="style">
+    <option>red</option>
+    <option>#888</option>
+    <option>#00ff00</option>
+    <option>rgb(0,0,255)</option>
+    <option>rgba(255,0,255,0.5)</option>
+  </select>
+  <canvas id="cav"></canvas>
+  <script>
+    var 
+      canvas = document.getElementById('cav'),
+      loop,
+      style;
+
+    document.getElementById('style').onchange = function(){
+      style = this.value;
+    };
+
+    loop = function(canvas, fps){
+
+      if(!canvas || !canvas.getContext) return false;
+      canvas.width  = 800;
+      canvas.height = 600;
+
+      var 
+        ctx = canvas.getContext('2d'),
+        update;
+
+      update = function(){
+        ctx.clearRect(0,0,canvas.width, canvas.height);
+        ctx.strokeStyle = style;
+        ctx.strokeRect(10,10,100,100);
+        
+        ctx.fillStyle = style;
+        ctx.fillRect(120,120,100,100);
+      };
+      setInterval(update, 1000/fps);
+    };
+
+    loop(canvas, 60);
+  
+  </script>
+</body>
+</html>
