@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>collision</title>
+</head>
+<body>
+  <canvas id="cav">canvas未対応です。</canvas>
+<script>
+  var
+    canvas = document.getElementById('cav'),
+    loop,
+    input = {
+      cursor: {
+        x:0,
+        y:0
+      }
+    };
+
+  canvas.onmousemove = function(e){
+    input.cursor.x = e.offsetX;
+    input.cursor.y = e.offsetY;
+  };
+
+  loop = function(canvas){
+    if(!canvas || !canvas.getContext) return false;
+
+    canvas.width  = 800;
+    canvas.height = 600;
+
+    var 
+      ctx = canvas.getContext('2d'),
+    update,
+    proto,
+    makeRect;
+
+    
+    proto = {
+      collision: function(rect){
+        if((this.x + this.w/2) < (rect.x - rect.w/2)) return false;
+        if((this.y + this.h/2) < (rect.y - rect.h/2)) return false;
+        if((this.x - this.w/2) > (rect.x + rect.w/2)) return false;
+        if((this.y - this.h/2) > (rect.y + rect.h/2)) return false;
+
+        return true;
+      }
+    };
+    makeRect = function(x, y, w, h){
+      var rect = Object.create(proto); 
+      rect.x = x;
+      rect.y = y;
+      rect.w = w;
+      rect.h = h;
+      return rect;
+    };
+
+    myrect = makeRect(0  , 0  , 100, 100);
+    rect1  = makeRect(80 , 200, 100, 100);
+    rect2  = makeRect(200, 75 , 100, 100);
+    rect3  = makeRect(300, 400, 100, 100);
+    var rects = [];
+    var oldX = 0;
+    var oldY = 0;
+    rects.push(rect1);
+    rects.push(rect2);
+    rects.push(rect3);
+    
+    update = function(){
+      requestAnimFrame(update);
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.save();
+
+      myrect.x = input.cursor.x;
+      myrect.y = input.cursor.y;
+      for(var i=0;i<rects.length;i++){
+
+        if(myrect.collision(rects[i])){
+          console.log('hit');
+          myrect.x = oldX;
+          myrect.y = oldY;
+          break;
+        }else{
+          if(i === rects.length-1){
+
+            oldX = input.cursor.x;
+            oldY = input.cursor.y;
+          }
+        }
+      }
+      
+      ctx.translate(myrect.x, myrect.y);
+      ctx.strokeStyle = 'blue';
+      ctx.strokeRect(-50, -50, 100, 100);
+      ctx.restore();
+      
+      ctx.save();
+      ctx.translate(80, 200);
+      ctx.strokeStyle = 'red';
+      ctx.strokeRect(-50, -50, 100, 100);
+      ctx.restore();
+      
+      ctx.save();
+      ctx.translate(200, 75);
+      ctx.strokeStyle = 'red';
+      ctx.strokeRect(-50, -50, 100, 100);
+      ctx.restore();
+      
+      ctx.save();
+      ctx.translate(300, 400);
+      ctx.strokeStyle = 'red';
+      ctx.strokeRect(-50, -50, 100, 100);
+      ctx.restore();
+    };
+
+    update();
+    
+  };
+
+  
+  window.requestAnimFrame = (function () {
+    return window.requestAnimationFrame ||
+      window.webkitRequestAnimationFrame ||
+      window.mozRequestAnimationFrame ||
+      window.oRequestAnimationFrame ||
+      window.msRequestAnimationFrame ||
+      function raf(callback, element) {
+        setTimeout(callback, 1000 / 60);
+      };
+  })();
+
+  loop(canvas);
+  
+</script>
+</body>
+</html>
